@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Mfuko brand colours — for use in XML resources (e.g. themes.xml window background).
+        In-app colours are managed by the Compose palette in ui/theme/Color.kt.
+    -->
+    <color name="mfuko_background">#FAFDF6</color>
+    <color name="mfuko_primary">#0F5132</color>
+    <color name="mfuko_gold">#96690C</color>
+</resources>

@@ -1,0 +1,81 @@
+<resources>
+    <!-- App name -->
+    <string name="app_name">Mfuko</string>
+
+    <!-- Auth screens -->
+    <string name="login_title">Welcome back</string>
+    <string name="login_subtitle">Sign in to your Mfuko account</string>
+    <string name="register_title">Create account</string>
+    <string name="register_subtitle">Join Mfuko to manage your group savings</string>
+    <string name="field_phone">Phone number</string>
+    <string name="field_password">Password</string>
+    <string name="field_pin">PIN</string>
+    <string name="field_name">Full name</string>
+    <string name="btn_login">Log in</string>
+    <string name="btn_register">Create account</string>
+    <string name="btn_demo">Continue as demo</string>
+    <string name="link_register">Don\'t have an account? Sign up</string>
+    <string name="link_login">Already have an account? Log in</string>
+
+    <!-- Home / Dashboard -->
+    <string name="screen_dashboard">Dashboard</string>
+    <string name="screen_activity">Activity</string>
+    <string name="screen_notifications">Notifications</string>
+    <string name="screen_members">Members</string>
+    <string name="btn_logout">Log out</string>
+    <string name="btn_manage_members">Manage Members</string>
+    <string name="btn_manage_loans">Manage Loan Requests</string>
+    <string name="btn_request_loan">Request a Loan</string>
+    <string name="label_contribution_progress">Contribution Progress</string>
+    <string name="label_active_loan">Active Loan</string>
+    <string name="label_outstanding_balance">Outstanding Balance</string>
+    <string name="label_unpaid_penalties">Unpaid Penalties</string>
+    <string name="btn_make_payment">Make a Payment</string>
+    <string name="no_dashboard_data">No dashboard data available.</string>
+
+    <!-- Nest management -->
+    <string name="screen_welcome">Welcome to Mfuko</string>
+    <string name="tab_create_nest">Create a Nest</string>
+    <string name="tab_join_nest">Join a Nest</string>
+    <string name="hint_group_name">Group name (e.g. \'Family Savings\')</string>
+    <string name="hint_contribution_amount">Monthly contribution (KES)</string>
+    <string name="hint_invite_code">6-digit invite code</string>
+    <string name="btn_create_nest">Create Nest</string>
+    <string name="btn_join_nest">Join Nest</string>
+    <string name="screen_nest_created">Nest Created!</string>
+    <string name="msg_nest_created_congrats">Congratulations! Your nest \'%1$s\' is ready.</string>
+    <string name="msg_share_invite">Share this code with your members:</string>
+    <string name="btn_go_to_dashboard">Go to Dashboard</string>
+
+    <!-- Members screen -->
+    <string name="screen_nest_members">Nest Members</string>
+    <string name="label_paid">Paid</string>
+    <string name="label_status">Status</string>
+    <string name="content_desc_record_payment">Record Payment</string>
+    <string name="no_members">No members found.</string>
+
+    <!-- Loans -->
+    <string name="screen_loan_requests">Manage Loan Requests</string>
+    <string name="no_loan_requests">No loan requests found.</string>
+    <string name="btn_approve">Approve</string>
+    <string name="btn_reject">Reject</string>
+    <string name="btn_repay_loan">Repay Loan</string>
+    <string name="btn_request_loan_dialog">Submit Request</string>
+    <string name="label_user_id">Member</string>
+    <string name="label_amount">Amount</string>
+    <string name="label_term">Term</string>
+    <string name="label_loan_status">Status</string>
+
+    <!-- Contributions -->
+    <string name="dialog_record_contribution">Record Contribution</string>
+    <string name="hint_amount">Amount (KES)</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <!-- Common -->
+    <string name="currency_prefix">KES</string>
+    <string name="loading">Loading…</string>
+    <string name="error_prefix">Error: %1$s</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="retry">Retry</string>
+</resources>

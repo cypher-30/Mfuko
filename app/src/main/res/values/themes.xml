@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Theme.Mfuko is the Activity window theme, applied before Compose takes over.
+        It controls the initial background colour and status bar appearance only.
+        All real UI theming is handled by MfukoTheme in ui/theme/Theme.kt.
+    -->
+    <style name="Theme.Mfuko" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/mfuko_background</item>
+    </style>
+</resources>

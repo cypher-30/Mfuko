@@ -2,7 +2,7 @@
 
 > *Mfuko* is Swahili for **fund / wallet**.
 
-Mfuko is an Android app for managing **Kenyan-style chama groups** (group savings circles). Members join a shared *Nest* (group), contribute on a monthly cycle, and can request loans from the collective pool. Interest is calculated automatically and managers oversee the whole process.
+Mfuko is an offline-first Android app for managing **Kenyan-style chama groups** (group savings circles). Members join a shared *Nest* (group), contribute on a monthly cycle, and can request loans from the collective pool. Interest is calculated automatically and managers oversee the whole process — no backend required to run it.
 
 ---
 
@@ -10,17 +10,17 @@ Mfuko is an Android app for managing **Kenyan-style chama groups** (group saving
 
 | Area | Status |
 |---|---|
-| Register / Log in (local + demo) | ✅ Phase 3 |
-| Create & join a Nest | ✅ Working |
-| Dashboard — contributions, loans, penalties | ✅ Working |
-| Manager: approve/reject loans | ✅ Working |
-| Manager: record member contributions | ✅ Working |
-| Contribution schedule & cycles | 🔜 Phase 5 |
-| Automatic interest calculation | 🔜 Phase 5 |
-| In-app notifications | 🔜 Phase 5 |
-| Financial health chart | 🔜 Phase 5 |
-| PDF report export | 🔜 Phase 5 |
-| M-Pesa integration | 🔜 Phase 5 (simulated) |
+| Register / log in (local + one-tap demo) | ✅ |
+| Create & join a Nest | ✅ |
+| Dashboard — contribution progress, active loan, financial health score | ✅ |
+| Manager panel — overview card, invite code, remove member, announcements | ✅ |
+| Contribution schedule & auto-rolling cycles | ✅ |
+| Automatic interest (flat or reducing-balance) | ✅ |
+| In-app notifications (contributions, loan decisions, announcements) | ✅ |
+| PDF report export & share | ✅ |
+| M-Pesa payment flow (simulated STK push) | ✅ |
+| Settings — notification toggle, change password | ✅ |
+| Automated tests | 🔜 Phase 6 |
 | Cloud sync (Ktor backend) | 🔜 Phase 7 |
 
 ---
@@ -48,21 +48,21 @@ See [BACKEND.md](docs/BACKEND.md) for running the Ktor backend and switching on 
 ## Project structure
 
 ```
-GroupMoneyManager/           ← Android app (this repo)
+Mfuko/                       ← Android app (this repo)
   app/src/main/
-    java/com/chama/groupmoneymanager/
+    java/com/chama/mfuko/
       data/
-        local/               ← DataStore (TokenManager, SessionManager)
-                             ← Room database (Phase 3+)
-        remote/              ← Retrofit API services & DTOs
-        repository/          ← Repository implementations
+        local/               ← Room DB, DataStore (TokenManager, SessionManager), DemoSeeder, CycleRoller
+        remote/               ← Retrofit API services & DTOs (Phase 7, optional)
+        repository/          ← Local*RepositoryImpl (default) + network RepositoryImpl (Phase 7)
       di/                    ← Hilt dependency injection (AppModule)
       ui/
         features/            ← Screen / ViewModel pairs (one folder per feature)
-        navigation/          ← AppNavHost, Screen sealed class
+        navigation/          ← AppNavHost, BottomNavScaffold, Screen sealed class
         theme/               ← Mfuko colour palette, MfukoTheme
+        components/          ← Shared composables (MfukoCard, MfukoGauge, ...)
         util/                ← formatKes() and other helpers
-      core/util/             ← Resource<T> sealed class
+      core/util/             ← LoanInterestCalculator, NestReportPdfGenerator, Resource<T>
 
 GroupMoneyManagerServer/     ← Ktor backend (separate project)
   C:\Users\Alvin\IdeaProjects\GroupMoneyManagerServer\
@@ -76,19 +76,20 @@ GroupMoneyManagerServer/     ← Ktor backend (separate project)
 |---|---|
 | [SETUP_ANDROID_STUDIO.md](docs/SETUP_ANDROID_STUDIO.md) | Build requirements, sync instructions, known issues |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Offline-first design, MVVM + Hilt, data flow |
-| [FEATURES.md](docs/FEATURES.md) | Full spec from the PDF, implementation status |
+| [FEATURES.md](docs/FEATURES.md) | Full spec from the original PDF, implementation status |
 | [DATA_MODEL.md](docs/DATA_MODEL.md) | Entity/ERD documentation, Room schema |
 | [BACKEND.md](docs/BACKEND.md) | Ktor server setup, API reference, cloud sync |
+| [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) | Colour palette, type scale, component guidelines |
 
 ---
 
 ## Tech stack
 
 - **Language:** Kotlin 2.1.x
-- **UI:** Jetpack Compose + Material3
-- **Architecture:** MVVM, Hilt DI, Unidirectional data flow
-- **Local DB:** Room (offline-first, Phase 3+)
+- **UI:** Jetpack Compose + Material3 (dynamic color off, Mfuko brand palette)
+- **Architecture:** MVVM, Hilt DI (KSP), unidirectional data flow
+- **Local DB:** Room — offline-first, source of truth
 - **Preferences:** DataStore
-- **Networking:** Retrofit + OkHttp (optional remote sync)
+- **Networking:** Retrofit + OkHttp (optional remote sync, off by default)
 - **Navigation:** Jetpack Navigation Compose
 - **Build:** Android Gradle Plugin 8.9, Gradle 8.11.1, KSP

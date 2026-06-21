@@ -22,7 +22,7 @@
 
 ## First sync (fresh clone)
 
-1. Open the project folder `GroupMoneyManager/` in Android Studio.
+1. Open the project folder `Mfuko/` in Android Studio.
 2. Android Studio will prompt to sync Gradle — click **Sync Now**.
    - Gradle 8.11.1 will be downloaded if not already cached (`~/.gradle/wrapper/dists`).
    - All library deps will be fetched from Maven Central / Google Maven.

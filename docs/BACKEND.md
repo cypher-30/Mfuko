@@ -70,7 +70,7 @@ enables real multi-device sync, M-Pesa Daraja integration, and cloud push notifi
 
 ### Prerequisites
 1. MySQL 8.x installed and running.
-2. Create database: `CREATE DATABASE gmm_db;`
+2. Create database: `CREATE DATABASE mfuko_db;`
 3. Verify `src/main/resources/application.conf` has your MySQL password.
 
 ```bash

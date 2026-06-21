@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GroupMoneyManager"
+rootProject.name = "Mfuko"
 include(":app")
  

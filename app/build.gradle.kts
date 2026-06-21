@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.chama.groupmoneymanager"
+    namespace = "com.chama.mfuko"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.chama.groupmoneymanager"
+        applicationId = "com.chama.mfuko"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

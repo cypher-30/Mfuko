@@ -8,4 +8,19 @@
     <style name="Theme.Mfuko" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/mfuko_background</item>
     </style>
+
+    <!--
+        Theme.Mfuko.Splash — the launch-time-only theme (set as MainActivity's
+        android:theme in the manifest). androidx.core.splashscreen swaps the
+        System splash window's background to mfuko_splash_background the
+        instant the Activity starts (APP_REDESIGN_BRIEF.md "Launch/splash
+        animation specs"), then hands off to Theme.Mfuko once
+        installSplashScreen() exits — the rich coin-stack animation itself is
+        rendered by the Compose MfukoSplash composable, not by this theme.
+    -->
+    <style name="Theme.Mfuko.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/mfuko_splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_empty</item>
+        <item name="postSplashScreenTheme">@style/Theme.Mfuko</item>
+    </style>
 </resources>

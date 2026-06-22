@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Dark-theme swap of ../values/colors.xml — used by the pre-Compose
+        Activity window (Theme.Mfuko / Theme.Mfuko.Splash) before MfukoTheme
+        takes over. See ui/theme/Color.kt for the in-app Compose palette.
+    -->
+    <color name="mfuko_background">#12150F</color>
+    <color name="mfuko_primary">#6CC097</color>
+    <color name="mfuko_gold">#DDB13D</color>
+
+    <!-- Splash window background (Theme.Mfuko.Splash) — green-900, APP_REDESIGN_BRIEF.md. -->
+    <color name="mfuko_splash_background">#082B1B</color>
+</resources>

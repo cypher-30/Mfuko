@@ -25,8 +25,9 @@ system is built on five principles:
    whitespace, confident typography, and motion that is felt rather than noticed. No gradients
    for their own sake, no decorative illustration that doesn't carry information.
 4. **Communal, not corporate.** Rounded, soft geometry (large card radii, pill-shaped chips and
-   nav indicators) over sharp institutional rectangles. The "nest" motif — woven, layered,
-   protective — recurs quietly in the brand mark and empty states, never as a gimmick.
+   nav indicators) over sharp institutional rectangles. The "pooled, layered" motif — individual
+   contributions stacking into shared wealth — recurs quietly in the brand mark (§8, the four
+   stacked coins) and empty states, never as a gimmick.
 5. **Status at a glance.** A chama is run on social accountability — everyone needs to instantly
    see who has paid, who hasn't, and whose loan is in good standing. Status is never just a word;
    it always carries a color and a shape (the `StatusChip`).
@@ -453,10 +454,13 @@ future build slots directly into this system without new design decisions:
   (light) / `onSurface` (dark, for contrast on dark backgrounds where green-on-dark-green would be
   low-contrast — use `green-300` specifically). Always lowercase "f-u-k-o" following "M" — never
   all-caps, never italicized.
-- **Symbol (for app icon / splash only, not used inline in-app):** a simple geometric mark of three
-  overlapping, slightly-offset rounded arcs (like woven basket strands, or three coins fanned)
-  forming a loose nest shape, rendered in `green-700` with a single `gold-400` strand as accent —
-  echoes Principle 4 (woven, communal) without becoming literal basket clip-art.
+- **Symbol (for app icon / splash only, not used inline in-app):** four stacked coins — the bottom
+  three rendered in the `green-700` ramp (member contributions) and the top coin in `gold-400` (the
+  collective harvest), each coin a darker "edge" ellipse plus a translucent highlight for a subtle
+  3D lip. Directly depicts what a chama does (individual contributions pooled into shared wealth)
+  without becoming literal coin/chart fintech clip-art. Never partial (always all four coins),
+  never gradient-filled, never gold-only. See `app/src/main/res/drawable/ic_launcher_foreground.xml`
+  for the exact geometry/palette (also the splash mark's source of truth).
 - **Clear space:** minimum clear space around the wordmark = the cap-height of the "M".
 - **Minimum size:** wordmark never set smaller than `titleLarge` (22sp) in any UI context.
 - **Usage:** wordmark appears on Login and Register (today only on Login — fixed in the re-skin),

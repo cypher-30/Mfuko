@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Themed-icon silhouette (Android 13+ adaptive icon "monochrome" layer).
+    Single-color silhouette of the four-coin mark (edge + face per coin, no
+    highlight/background) — the system applies the wallpaper-derived tint at
+    render time, so the fill color value itself is irrelevant.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Coin 4 (bottom) -->
+    <path android:fillColor="#FF000000" android:pathData="M28,73A26,7.5 0 1,0 80,73A26,7.5 0 1,0 28,73Z"/>
+    <path android:fillColor="#FF000000" android:pathData="M28,70A26,7.5 0 1,0 80,70A26,7.5 0 1,0 28,70Z"/>
+    <!-- Coin 3 -->
+    <path android:fillColor="#FF000000" android:pathData="M28,61A26,7.5 0 1,0 80,61A26,7.5 0 1,0 28,61Z"/>
+    <path android:fillColor="#FF000000" android:pathData="M28,58A26,7.5 0 1,0 80,58A26,7.5 0 1,0 28,58Z"/>
+    <!-- Coin 2 -->
+    <path android:fillColor="#FF000000" android:pathData="M28,49A26,7.5 0 1,0 80,49A26,7.5 0 1,0 28,49Z"/>
+    <path android:fillColor="#FF000000" android:pathData="M28,46A26,7.5 0 1,0 80,46A26,7.5 0 1,0 28,46Z"/>
+    <!-- Coin 1 (top) -->
+    <path android:fillColor="#FF000000" android:pathData="M28,37A26,7.5 0 1,0 80,37A26,7.5 0 1,0 28,37Z"/>
+    <path android:fillColor="#FF000000" android:pathData="M28,34A26,7.5 0 1,0 80,34A26,7.5 0 1,0 28,34Z"/>
+</vector>

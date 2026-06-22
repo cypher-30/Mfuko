@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fully transparent placeholder for Theme.Mfuko.Splash's
+    windowSplashScreenAnimatedIcon. Without this override,
+    androidx.core.splashscreen / the platform SplashScreen API defaults to
+    drawing the app's static launcher icon (the already-complete coin stack)
+    on the system splash window — which then disappears and gets replayed
+    from scratch by the Compose MfukoSplash animation, producing a visible
+    "static icon, then animation restarts" flash. Leaving the system splash
+    icon empty means only the background color shows before MfukoSplash
+    takes over and builds the coin stack via animation, never as a static
+    pre-rendered icon.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#00000000" android:pathData="M0,0h108v108h-108z"/>
+</vector>

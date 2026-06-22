@@ -1,6 +1,8 @@
 # Mfuko — App Icon & Launch Animation Redesign Brief
 
-**Status:** Draft v1.0 — 2026-06-21
+**Status:** Implemented v1.1 — 2026-06-22 (supersedes the v1.0 "three arcs" concept below with the
+four-stacked-coins mark; see `icon and launch animations/Mfuko Visual Redesign.dc.html` for the
+final mockup this brief now describes, and `DESIGN_SYSTEM.md` §8 for the canonical mark spec.)
 **Scope note:** Mfuko already has a decision-complete visual system in [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) (colors, type, shape, spacing, component specs). This brief does **not** override that document — it is the source of truth for every token referenced below. This brief's job is the two pieces that document leaves unresolved: the **app icon** (currently the unmodified Android Studio template) and the **launch/splash animation** (currently nonexistent).
 
 ---
@@ -14,16 +16,25 @@
 
 ---
 
-## Current State
+## Current State (as implemented)
 
 ### Icon
-The app ships the **unmodified Android Studio default template icon**:
-- Adaptive icon background: flat `#000000` black (`res/values/ic_launcher_background.xml`)
-- Adaptive icon foreground: the stock Android Studio "ruler grid + Android logomark" vector (`res/drawable/ic_launcher_foreground.xml`), filled `#3DDC84` (Android brand green — coincidentally close to, but not derived from, Mfuko's own brand green)
-- No relationship to the Mfuko brand whatsoever; this is the single most visible "default/unfinished app" signal on the Play Store listing and home screen.
+The app icon is now the **four-stacked-coins** mark — bottom three coins in the `green-700` ramp
+(member contributions), top coin `gold-400` (the collective harvest):
+- Adaptive icon background: flat `green-50` `#EAF6EF` light / `green-900` `#082B1B` dark
+  (`res/values/ic_launcher_background.xml` + `values-night/`)
+- Adaptive icon foreground: the four-coin vector mark (`res/drawable/ic_launcher_foreground.xml` +
+  `drawable-night/` dark-palette swap)
+- Monochrome (Android 13+ themed icon) layer: coin silhouette, `res/drawable/ic_launcher_monochrome.xml`
+- Legacy/round rasters (API 24–25 fallback) and the Play Store 512×512 PNG are generated from the
+  same geometry by `icon and launch animations/generate_icons.py` (Pillow) rather than hand-exported
 
 ### Launch animation
-**None exists.** There is no splash screen, no `SplashScreen` API usage, and no animated launch moment — the app currently cold-starts directly into the system default white/blank window before the first Compose frame renders. `DESIGN_SYSTEM.md` §4.2 reserves `displayLarge` "for splash" and §8 notes the wordmark "may appear in a splash/launch moment," but no concrete spec exists until this document.
+Implemented as a native Compose **"coins stacking"** sequence
+(`ui/features/splash/MfukoSplash.kt`), wired through `androidx.core.splashscreen` in `MainActivity`:
+the four coins rise + bounce into the stack one at a time, bottom-up, then the "Mfuko" wordmark
+settles in beneath it, then the whole splash cross-fades into the first real screen. `DESIGN_SYSTEM.md`
+§4.2's `displayLarge` "for splash" slot and §8's brand-mark spec are both realized by this composable.
 
 ---
 
@@ -33,27 +44,28 @@ The app ships the **unmodified Android Studio default template icon**:
 No new direction is being introduced — this redesign **executes** the brand voice already defined in `DESIGN_SYSTEM.md` §1 for the two surfaces (icon, launch) that predate that system:
 - **Mood:** warm, grounded, communal — "trust around a table," not clinical fintech.
 - **Personality:** restrained, premium-through-simplicity, social/woven rather than corporate/geometric.
-- **Color palette intent:** deep forest green as the dominant identity color (savings, growth, trust), with a single raw-gold accent strand (wealth, harvest) — never more than one accent color active in the mark at once, per Principle 3 ("trust through restraint").
+- **Color palette intent:** deep forest green as the dominant identity color (savings, growth, trust), with a single raw-gold accent coin (wealth, harvest) — never more than one accent color active in the mark at once, per Principle 3 ("trust through restraint").
 
 ### Icon redesign specs
 | Spec | Value |
 |---|---|
 | Shape | Standard Android adaptive icon (foreground + background layers, 108×108dp safe zone, 72×72dp visible circle/squircle mask) |
-| Icon mark concept | The brand symbol already defined in `DESIGN_SYSTEM.md` §8: **three overlapping, slightly-offset rounded arcs** (woven basket strands / fanned coins) forming a loose "nest" shape — communal and protective, not literal basket clip-art |
-| Foreground color | `green-700` (`#0F5132`) for two arcs, `gold-400` (`#D4A017`) for the single accent strand — exactly the existing wordmark/symbol pairing, no new colors introduced |
-| Background color | `green-50` (`#EAF6EF`) flat fill (light, warm, lets the dark green/gold marks read with strong contrast) — replaces the placeholder `#000000` |
-| Dark variant | Background flips to `green-900` (`#082B1B`); foreground arcs flip to `green-300` (`#6CC097`) + `gold-300` (`#DDB13D`) for AA contrast on the dark fill — mirrors the existing dark-theme token swaps in `Color.kt` |
-| Monochrome layer (Android 13+ themed icon) | Single-color silhouette of the three-arc mark, tinted by system wallpaper accent per Android adaptive-icon spec |
-| Format | SVG/vector master → exported per Deliverables Checklist below |
+| Icon mark concept | The brand symbol defined in `DESIGN_SYSTEM.md` §8: **four stacked coins** — bottom three = member contributions, top = collective gold harvest. Directly depicts what a chama does (individual contributions pooled into shared wealth), not literal fintech coin/chart clip-art |
+| Foreground color | `green-700` ramp (`#0B3D26`→`#1F8059` faces, darker "edge" shade per coin) for the bottom three coins, `gold-400` (`#D4A017`) for the single top coin — exactly the existing wordmark/symbol pairing, no new colors introduced |
+| Background color | `green-50` (`#EAF6EF`) flat fill (light, warm, lets the dark green/gold coins read with strong contrast) — replaces the placeholder `#000000` |
+| Dark variant | Background flips to `green-900` (`#082B1B`); the three green coins flip to the `green-300`/`green-400`/`green-500` ramp for AA contrast on the dark fill — mirrors the existing dark-theme token swaps in `Color.kt`. The gold top coin (`#D4A017`) is identical in both themes |
+| Monochrome layer (Android 13+ themed icon) | Single-color silhouette of the four-coin mark, tinted by system wallpaper accent per Android adaptive-icon spec |
+| Format | Vector master (`res/drawable/ic_launcher_foreground.xml`) → legacy/round rasters + Play Store PNG generated by `icon and launch animations/generate_icons.py` |
 
 ### Launch/splash animation specs
 | Spec | Value |
 |---|---|
-| Duration | **2.0s** total (within the 1.5–2.5s recommended range) |
-| Animation type | **Reveal / draw-on** — the three arcs of the icon mark draw on sequentially (not a morph, not a particle effect), echoing Principle 3 ("motion that is felt rather than noticed") and reusing the exact spring/easing vocabulary already established in `DESIGN_SYSTEM.md` §9 (e.g. §9.1's `DampingRatioMediumBouncy` overshoot pattern) |
-| Easing curves | Arc draw-in: `FastOutSlowInEasing`, 600ms each, 120ms stagger between arcs. Wordmark settle: `spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)` — same spring spec already used for the payment-success checkmark (§9.1), kept consistent rather than inventing a new motion signature. |
-| Key frames (plain language) | 1) Black/system splash background swaps to `green-50` (light) / `green-900` (dark) the instant the activity starts. 2) Arc 1 (left, green-700) draws on left-to-right. 3) 120ms later, Arc 2 (right, green-700) draws on, overlapping Arc 1's tail. 4) 120ms later, the gold accent strand draws on last, completing the nest shape with a small overshoot settle. 5) 150ms after the mark completes, the "Mfuko" wordmark (Bricolage Grotesque SemiBold, `displayLarge`, §4.2) fades + slides up 12dp beneath the mark. 6) Hold composed state for ~300ms, then cross-fade (200ms) into the real first screen (Login/Demo or Home, depending on session state). |
-| Lottie vs native | **Native Compose** — implemented with `Canvas`/`drawArc` (the same primitive `HealthGauge` already uses per §6.7) and `androidx.core.splashscreen` for the system-level splash window, avoiding a new Lottie dependency and keeping the app's offline-first, dependency-light posture. See `launch_animation_spec.md` for the frame-level breakdown. |
+| Duration | **~4.1s** total — deliberately slow; this is the one moment in the app meant to be watched, not reacted to instantly. Can extend slightly further on a slow cold start (see "readiness gating" below) |
+| Animation type | **Coins stacking** — the four coins of the icon mark rise + bounce into the stack one at a time, bottom-up (not a morph, not a particle effect), echoing Principle 3 ("motion that is felt rather than noticed") and reusing the exact spring/easing vocabulary already established in `DESIGN_SYSTEM.md` §9 (e.g. §9.1's `DampingRatioMediumBouncy` overshoot pattern). The system splash window shows **only the background color** (`windowSplashScreenAnimatedIcon` overridden to a transparent placeholder) so the static, already-complete app icon never flashes before the coins animate in — the stack is only ever seen mid-build. |
+| Readiness gating | The splash's exit is gated on `MainViewModel.startDestination` actually resolving (a DataStore read), not on the clock alone — `MfukoSplash(contentReady = startDestination != null, ...)`. It holds the completed stack+wordmark for a minimum 700ms, but won't cross-fade out until the app actually has somewhere to navigate to. Without this, a slow cold-start read could let the splash disappear onto a blank `Surface` before `AppNavHost` has anything to show. |
+| Easing curves | Coin rise + bounce: `spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = 90f)` — well below `Spring.StiffnessLow` (200f) for a slow, floaty settle — driving each coin's vertical offset/scale, 320ms stagger between coins (bottom coin first, gold coin last). Wordmark settle: `tween(500ms, FastOutSlowInEasing)` — fade + 18dp slide. |
+| Key frames (plain language) | 1) Black/system splash background swaps to `green-50` (light) / `green-900` (dark) the instant the activity starts — no icon. 2) Coin 4 (bottom, green) rises + bounces into place over ~1.2s. 3) 320ms later, Coin 3 rises, overlapping Coin 4's settle. 4) 320ms later, Coin 2 rises. 5) 320ms later, the gold coin rises last, crowning the stack with a final bounce. 6) Once the stack has settled (~2.1s in), the "Mfuko" wordmark (Bricolage Grotesque SemiBold, `displayLarge`, §4.2) fades + slides up 18dp beneath the stack, sitting close (`sm`, 8dp gap — tight, reads as one mark, not the standard section-gap spacing). 7) Hold composed state (≥700ms, until content is ready), then cross-fade (350ms) into the real first screen (Login/Demo or Home, depending on session state). |
+| Lottie vs native | **Native Compose** — implemented with `Canvas`/`drawOval` (the same primitive `HealthGauge` already uses per §6.7, there via `drawArc`) and `androidx.core.splashscreen` for the system-level splash window, avoiding a new Lottie dependency and keeping the app's offline-first, dependency-light posture. See `launch_animation_spec.md` for the frame-level breakdown and `ui/features/splash/MfukoSplash.kt` for the implementation. |
 
 ---
 
@@ -79,25 +91,25 @@ All tokens below are sourced directly from `DESIGN_SYSTEM.md` (§3–§5) — re
 | UI | Inter, Medium 500 | Not used on splash; reserved for in-app labels/buttons |
 
 ### Shape, shadow, spacing (from `DESIGN_SYSTEM.md` §5)
-- **Border radius scale:** `extraSmall 8dp`, `small 12dp`, `medium 16dp`, `large 24dp`, `extraLarge 28dp`, `full 50%` — the icon's arcs use `StrokeCap.Round` consistent with this generously-rounded scale; no sharp terminals anywhere in the mark.
-- **Shadow/elevation:** icon and splash are flat, elevation `0` — no drop shadows on the mark itself (adaptive icon masking handles any system-applied shadow).
-- **Spacing scale:** `xs=4, sm=8, md=12, lg=16, xl=24, xxl=32, xxxl=48` dp — wordmark sits `xl` (24dp) below the icon mark on the splash screen, matching the "section gap" token used for major UI blocks elsewhere in the app.
+- **Border radius scale:** `extraSmall 8dp`, `small 12dp`, `medium 16dp`, `large 24dp`, `extraLarge 28dp`, `full 50%` — each coin is a fully-rounded ellipse (`full 50%` terminal), consistent with this generously-rounded scale; no sharp terminals anywhere in the mark.
+- **Shadow/elevation:** icon and splash are flat, elevation `0` — the only depth cue is each coin's own darker "edge" ellipse, not a system drop shadow (adaptive icon masking handles any system-applied shadow).
+- **Spacing scale:** `xs=4, sm=8, md=12, lg=16, xl=24, xxl=32, xxxl=48` dp — wordmark sits `sm` (8dp) below the coin stack on the splash screen, a tight gap so it reads as part of the same mark rather than a separate section (unlike the `xl` "section gap" token used between major UI blocks elsewhere in the app).
 
 ---
 
 ## Deliverables Checklist
 
-- [ ] App icon — 1024×1024 master (SVG + PNG)
-- [ ] Adaptive icon layers — foreground (vector, 108×108dp) + background (flat color, 108×108dp) + monochrome layer (Android 13+ themed icon)
-- [ ] Splash/launch animation — implemented natively in Compose (`Canvas` + `androidx.core.splashscreen`); no Lottie/After Effects source required per the decision above
-- [ ] Figma component library — icon mark + splash sequence as reusable Figma components, linked to existing `DESIGN_SYSTEM.md` tokens
-- [ ] Dark mode variants — icon background/foreground dark swap; splash background/wordmark dark swap (both specified above)
-- [ ] Export specs for iOS and Android — **Android only for now** (no iOS target exists in this codebase); Android exports: `mipmap-mdpi` through `mipmap-xxxhdpi` adaptive icon webp/PNG layers, plus `mipmap-anydpi-v26` adaptive icon XML and `drawable` monochrome XML
+- [x] App icon — 512×512 Play Store PNG (`app/src/main/ic_launcher-playstore.png`), generated from the vector master
+- [x] Adaptive icon layers — foreground (vector, 108×108dp, light + `drawable-night/` dark) + background (flat color, light + `values-night/` dark) + monochrome layer (Android 13+ themed icon)
+- [x] Splash/launch animation — implemented natively in Compose (`Canvas` + `androidx.core.splashscreen`); no Lottie/After Effects source required per the decision above
+- [ ] Figma component library — icon mark + splash sequence as reusable Figma components, linked to existing `DESIGN_SYSTEM.md` tokens (not yet created — the folder mockup is a static HTML reference, not a live Figma file)
+- [x] Dark mode variants — icon background/foreground dark swap; splash background/wordmark dark swap (both specified above)
+- [x] Export specs for iOS and Android — **Android only** (no iOS target exists in this codebase); Android exports: `mipmap-mdpi` through `mipmap-xxxhdpi` adaptive icon webp legacy/round/foreground layers (regenerated by `icon and launch animations/generate_icons.py`), plus `mipmap-anydpi-v26` adaptive icon XML and `drawable` monochrome XML
 
 ---
 
 ## References & Inspiration
 
 - Primary reference: this app's own `DESIGN_SYSTEM.md` §1 (brand principles), §3 (color), §8 (brand mark concept), §9 (existing micro-interaction motion vocabulary) — the icon and splash should look like they were designed by the same hand as the rest of the re-skin, not a separate exercise.
-- Visual touchstone for the "three woven arcs" mark: layered/fanned coin or basket-weave motifs — communal and protective, deliberately avoiding literal basket clip-art or generic fintech chart/coin iconography.
-- _No external mood-board links provided yet — add here if/when available._
+- Design mockup (final): `icon and launch animations/Mfuko Visual Redesign.dc.html` — the four-stacked-coins icon system and the "coins stacking" launch sequence implemented above were taken directly from this file.
+- Visual touchstone for the four-coin mark: layered/fanned coin motifs — communal and protective, deliberately avoiding generic fintech chart/coin iconography.

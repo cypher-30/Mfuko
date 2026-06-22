@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dark-theme palette swap of ../drawable/ic_launcher_foreground.xml — same
+    coin geometry, colors flipped to the dark ramp per
+    APP_REDESIGN_BRIEF.md / Mfuko Visual Redesign.dc.html §01 "Dark Mode".
+    Gold (top coin) is identical in both themes.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Coin 4 (bottom, green) -->
+    <path android:fillColor="#0A3020" android:pathData="M28,73A26,7.5 0 1,0 80,73A26,7.5 0 1,0 28,73Z"/>
+    <path android:fillColor="#1F8059" android:pathData="M28,70A26,7.5 0 1,0 80,70A26,7.5 0 1,0 28,70Z"/>
+    <path android:fillColor="#3FA476" android:fillAlpha="0.35" android:pathData="M35,67.5A19,2.8 0 1,0 73,67.5A19,2.8 0 1,0 35,67.5Z"/>
+    <!-- Coin 3 (green) -->
+    <path android:fillColor="#1A5C3C" android:pathData="M28,61A26,7.5 0 1,0 80,61A26,7.5 0 1,0 28,61Z"/>
+    <path android:fillColor="#3FA476" android:pathData="M28,58A26,7.5 0 1,0 80,58A26,7.5 0 1,0 28,58Z"/>
+    <path android:fillColor="#6CC097" android:fillAlpha="0.4" android:pathData="M35,55.5A19,2.8 0 1,0 73,55.5A19,2.8 0 1,0 35,55.5Z"/>
+    <!-- Coin 2 (green) -->
+    <path android:fillColor="#357F59" android:pathData="M28,49A26,7.5 0 1,0 80,49A26,7.5 0 1,0 28,49Z"/>
+    <path android:fillColor="#6CC097" android:pathData="M28,46A26,7.5 0 1,0 80,46A26,7.5 0 1,0 28,46Z"/>
+    <path android:fillColor="#A0D9BC" android:fillAlpha="0.4" android:pathData="M35,43.5A19,2.8 0 1,0 73,43.5A19,2.8 0 1,0 35,43.5Z"/>
+    <!-- Coin 1 (top, gold harvest) -->
+    <path android:fillColor="#7A5F09" android:pathData="M28,37A26,7.5 0 1,0 80,37A26,7.5 0 1,0 28,37Z"/>
+    <path android:fillColor="#D4A017" android:pathData="M28,34A26,7.5 0 1,0 80,34A26,7.5 0 1,0 28,34Z"/>
+    <path android:fillColor="#EBCB6E" android:fillAlpha="0.55" android:pathData="M35,31.5A19,2.8 0 1,0 73,31.5A19,2.8 0 1,0 35,31.5Z"/>
+</vector>

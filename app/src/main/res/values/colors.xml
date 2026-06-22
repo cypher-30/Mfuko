@@ -7,4 +7,7 @@
     <color name="mfuko_background">#FAFDF6</color>
     <color name="mfuko_primary">#0F5132</color>
     <color name="mfuko_gold">#96690C</color>
+
+    <!-- Splash window background (Theme.Mfuko.Splash) — green-50, APP_REDESIGN_BRIEF.md. -->
+    <color name="mfuko_splash_background">#EAF6EF</color>
 </resources>

@@ -64,8 +64,8 @@ Mfuko/                       ← Android app (this repo)
         util/                ← formatKes() and other helpers
       core/util/             ← LoanInterestCalculator, NestReportPdfGenerator, Resource<T>
 
-GroupMoneyManagerServer/     ← Ktor backend (separate project)
-  C:\Users\Alvin\IdeaProjects\GroupMoneyManagerServer\
+MfukoServer/                  ← Ktor backend (separate project)
+  C:\Users\Alvin\IdeaProjects\MfukoServer\
 ```
 
 ---

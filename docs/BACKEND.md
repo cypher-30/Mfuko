@@ -1,6 +1,6 @@
 # Mfuko — Backend (Ktor Server)
 
-> Backend project location: `C:\Users\Alvin\IdeaProjects\GroupMoneyManagerServer`
+> Backend project location: `C:\Users\Alvin\IdeaProjects\MfukoServer`
 
 The Mfuko Android app works fully offline (Phase 3+). The Ktor backend is **optional** and
 enables real multi-device sync, M-Pesa Daraja integration, and cloud push notifications.
@@ -74,7 +74,7 @@ enables real multi-device sync, M-Pesa Daraja integration, and cloud push notifi
 3. Verify `src/main/resources/application.conf` has your MySQL password.
 
 ```bash
-cd C:\Users\Alvin\IdeaProjects\GroupMoneyManagerServer
+cd C:\Users\Alvin\IdeaProjects\MfukoServer
 ./gradlew run
 # Server starts at http://0.0.0.0:8081
 ```

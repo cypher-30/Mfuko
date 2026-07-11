@@ -122,7 +122,17 @@ fun MembersScreen(
                         announcementSent     = state.announcementSent,
                         onNestSettingsClick  = { onNavigateToNestSettings(state.nestId) },
                         onExportClick        = viewModel::onExportReportClick,
-                        onAnnouncementClick  = viewModel::onAnnouncementIconClick
+                        onAnnouncementClick  = viewModel::onAnnouncementIconClick,
+                        onShareInviteClick   = {
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(
+                                    Intent.EXTRA_TEXT,
+                                    "Join my nest '${state.nestName}' on Mfuko! Use invite code: ${state.inviteCode}"
+                                )
+                            }
+                            context.startActivity(Intent.createChooser(shareIntent, "Share invite code"))
+                        }
                     )
                 }
             }
@@ -145,7 +155,8 @@ fun ManagerOverviewCard(
     announcementSent: Boolean,
     onNestSettingsClick: () -> Unit,
     onExportClick: () -> Unit,
-    onAnnouncementClick: () -> Unit
+    onAnnouncementClick: () -> Unit,
+    onShareInviteClick: () -> Unit
 ) {
     val totalCollected = members.sumOf { it.amountPaid }
     val totalDue = members.sumOf { it.totalDue }
@@ -216,14 +227,23 @@ fun ManagerOverviewCard(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                IconButton(onClick = {
-                    clipboardManager.setText(AnnotatedString(inviteCode))
-                }) {
-                    Icon(
-                        Icons.Default.ContentCopy,
-                        contentDescription = "Copy invite code",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row {
+                    IconButton(onClick = {
+                        clipboardManager.setText(AnnotatedString(inviteCode))
+                    }) {
+                        Icon(
+                            Icons.Default.ContentCopy,
+                            contentDescription = "Copy invite code",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    IconButton(onClick = onShareInviteClick) {
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = "Share invite code",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         }

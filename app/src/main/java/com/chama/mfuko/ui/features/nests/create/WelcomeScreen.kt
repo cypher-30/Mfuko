@@ -28,9 +28,11 @@ fun WelcomeScreen(
      * Non-null only when this screen was reached from an existing dashboard
      * (drawer "Switch Nest") and there's somewhere to safely return to.
      * Null for the first-run flow right after login/register, where no nest
-     * exists yet and there's nothing to go back to.
+     * exists yet — in that case the back arrow logs the user out and returns
+     * to login instead (see [onNavigateToLogin]), so they're never stranded.
      */
-    onNavigateBack: (() -> Unit)? = null
+    onNavigateBack: (() -> Unit)? = null,
+    onNavigateToLogin: () -> Unit = {}
 ) {
     val state = viewModel.state.value
     val context = LocalContext.current
@@ -46,6 +48,8 @@ fun WelcomeScreen(
                     onNestCreated(event.nestName, event.inviteCode)
                 is WelcomeViewModel.UiEvent.ShowToast ->
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                is WelcomeViewModel.UiEvent.NavigateToLogin ->
+                    onNavigateToLogin()
             }
         }
     }
@@ -57,14 +61,15 @@ fun WelcomeScreen(
             TopAppBar(
                 title = { Text("Welcome to Mfuko", style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
-                    onNavigateBack?.let { back ->
-                        IconButton(onClick = back) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                    // Always show a back arrow — if there's nowhere to navigate back
+                    // to (first-run flow right after login/register), it logs the
+                    // user out and returns to login instead of leaving them stuck.
+                    IconButton(onClick = onNavigateBack ?: viewModel::onExitClick) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             )

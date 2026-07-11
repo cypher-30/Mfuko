@@ -22,10 +22,13 @@ android {
 
     buildTypes {
         debug {
-            // Use the Android emulator loopback address by default.
-            // For a physical device on the same Wi-Fi, replace with your LAN IP.
+            // Local/offline mode (Room-backed) — matches release. The network path
+            // (USE_REMOTE = true) is unfinished (Phase 7 remote sync): several screens
+            // (e.g. NestSettingsScreen) read straight from Room regardless of this flag,
+            // and demo login only works offline. Flip back to true only once remote
+            // sync is fully wired up across all repositories/screens.
             buildConfigField("Boolean", "USE_REMOTE", "false")
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8081/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.100.13:8081/\"")
         }
         release {
             isMinifyEnabled = false

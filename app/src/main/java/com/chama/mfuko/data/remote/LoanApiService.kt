@@ -13,7 +13,7 @@ interface LoanApiService {
     @POST("api/loans/{loanId}/approve")
     suspend fun approveLoan(@Path("loanId") loanId: Long): Response<Unit>
 
-    @GET("api/nests/{nestId}/loans")
+    @GET("api/loans/nest/{nestId}")
     suspend fun getNestLoans(@Path("nestId") nestId: Long): Response<List<LoanDetailsResponse>>
 
     @POST("api/loans/{loanId}/repay")
@@ -22,8 +22,6 @@ interface LoanApiService {
         @Body request: RepayLoanRequest
     ): Response<Unit>
 
-
-    // ✅ ADD THIS NEW FUNCTION
     @POST("api/loans/{loanId}/reject")
     suspend fun rejectLoan(@Path("loanId") loanId: Long): Response<Unit>
 }

@@ -21,6 +21,10 @@ interface MembershipDao {
     @Query("SELECT * FROM memberships WHERE nestId = :nestId")
     fun getMembersOfNest(nestId: Long): Flow<List<MembershipEntity>>
 
+    /** Returns a nest the user already belongs to, or null if they belong to none. */
+    @Query("SELECT nestId FROM memberships WHERE userId = :userId LIMIT 1")
+    suspend fun getFirstNestIdForUser(userId: Long): Long?
+
     @Query("DELETE FROM memberships WHERE userId = :userId AND nestId = :nestId")
     suspend fun deleteMembership(userId: Long, nestId: Long)
 }

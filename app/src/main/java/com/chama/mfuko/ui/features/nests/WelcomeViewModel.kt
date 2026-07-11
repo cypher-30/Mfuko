@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chama.mfuko.core.util.Resource
+import com.chama.mfuko.data.repository.AuthRepository
 import com.chama.mfuko.data.repository.NestRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +23,8 @@ data class WelcomeState(
 
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
-    private val nestRepository: NestRepository
+    private val nestRepository: NestRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(WelcomeState())
@@ -92,11 +94,25 @@ class WelcomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Called when the user backs out of this screen with nowhere else to go
+     * (the first-run flow right after login/register). Logs them out and
+     * returns to the login screen rather than leaving them stranded.
+     */
+    fun onExitClick() {
+        viewModelScope.launch {
+            authRepository.logout()
+            _eventFlow.send(UiEvent.NavigateToLogin)
+        }
+    }
+
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
         /** User joined an existing nest — go straight to the dashboard. */
         object NavigateToHome : UiEvent()
         /** User created a new nest — show them the invite code first. */
         data class NavigateToNestCreated(val nestName: String, val inviteCode: String) : UiEvent()
+        /** User backed out with no nest and nowhere to go — return to login. */
+        object NavigateToLogin : UiEvent()
     }
 }

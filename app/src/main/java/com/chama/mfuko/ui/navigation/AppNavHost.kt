@@ -73,6 +73,11 @@ fun AppNavHost(navController: NavHostController, startDestination: String) {
                     { navController.navigateUp() }
                 } else {
                     null
+                },
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Welcome.route) { inclusive = true }
+                    }
                 }
             )
         }

@@ -1,10 +1,17 @@
 package com.chama.mfuko.ui.features.nests.create
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,6 +26,9 @@ fun CreateNestSuccessScreen(
     viewModel: CreateNestSuccessViewModel = hiltViewModel(),
     onNavigateToHome: () -> Unit
 ) {
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Nest Created!") })
@@ -61,6 +71,44 @@ fun CreateNestSuccessScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = MfukoSpacing.xl, vertical = MfukoSpacing.lg)
                 )
+            }
+            Spacer(modifier = Modifier.height(MfukoSpacing.lg))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(MfukoSpacing.md)
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(viewModel.inviteCode))
+                    }
+                ) {
+                    Icon(
+                        Icons.Filled.ContentCopy,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(MfukoSpacing.xs))
+                    Text("Copy code")
+                }
+                OutlinedButton(
+                    onClick = {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "Join my nest '${viewModel.nestName}' on Mfuko! Use invite code: ${viewModel.inviteCode}"
+                            )
+                        }
+                        context.startActivity(Intent.createChooser(shareIntent, "Share invite code"))
+                    }
+                ) {
+                    Icon(
+                        Icons.Filled.Share,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(MfukoSpacing.xs))
+                    Text("Share")
+                }
             }
             Spacer(modifier = Modifier.height(MfukoSpacing.xxxl))
             Button(

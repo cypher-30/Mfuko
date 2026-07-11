@@ -18,8 +18,9 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val response = apiService.register(request)
             if (response.isSuccessful && response.body() != null) {
-                tokenManager.saveToken(response.body()!!.token)
-                Resource.Success(response.body()!!)
+                val body = response.body()!!
+                tokenManager.saveUserSession(body.userId, body.name, body.token)
+                Resource.Success(body)
             } else {
                 Resource.Error(response.message() ?: "Registration failed")
             }
@@ -32,8 +33,9 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val response = apiService.login(request)
             if (response.isSuccessful && response.body() != null) {
-                tokenManager.saveToken(response.body()!!.token)
-                Resource.Success(response.body()!!)
+                val body = response.body()!!
+                tokenManager.saveUserSession(body.userId, body.name, body.token)
+                Resource.Success(body)
             } else {
                 Resource.Error("Invalid phone number or password")
             }
@@ -46,9 +48,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun loginDemo(): Resource<AuthResponse> =
         Resource.Error("Demo login is only available in offline mode.")
 
-    // ✅ THIS IS THE FIX for the Logout crash
     override suspend fun logout() {
-        tokenManager.deleteToken()
+        tokenManager.clearAll()
     }
 
     override fun getAuthToken(): Flow<String?> {

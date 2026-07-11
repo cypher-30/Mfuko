@@ -2,13 +2,21 @@ package com.chama.mfuko.ui.features.auth.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +31,7 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit
 ) {
     val state = viewModel.state.value
+    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -73,9 +82,17 @@ fun LoginScreen(
                 value                  = state.password,
                 onValueChange          = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
                 label                  = { Text("Password") },
-                visualTransformation   = PasswordVisualTransformation(),
+                visualTransformation   = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions        = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine             = true,
+                trailingIcon           = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
                 modifier               = Modifier.fillMaxWidth()
             )
 

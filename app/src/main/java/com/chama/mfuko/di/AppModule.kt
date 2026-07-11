@@ -2,8 +2,6 @@ package com.chama.mfuko.di
 
 import android.content.Context
 import com.chama.mfuko.BuildConfig
-import com.chama.mfuko.data.local.CycleRoller
-import com.chama.mfuko.data.local.DemoSeeder
 import com.chama.mfuko.data.local.MfukoDatabase
 import com.chama.mfuko.data.local.TokenManager
 import com.chama.mfuko.data.local.dao.ContributionDao
@@ -117,72 +115,36 @@ object AppModule {
     fun provideLoanApiService(retrofit: Retrofit): LoanApiService =
         retrofit.create(LoanApiService::class.java)
 
-    // ── Repositories — offline-first (Phase 3) ─────────────────────────────
+    // ── Repositories — local (offline) or network (Phase 7 remote sync),
+    // ── selected by BuildConfig.USE_REMOTE ──────────────────────────────────
 
-    /**
-     * [AuthRepository] is now backed by Room (local auth + demo seed).
-     * The network [AuthRepositoryImpl] is kept at [data/repository/AuthRepositoryImpl.kt]
-     * for Phase 7 (remote sync).  Swap the binding below to re-enable remote auth.
-     */
     @Provides @Singleton
     fun provideAuthRepository(
-        userDao: UserDao,
-        tokenManager: TokenManager,
-        demoSeeder: DemoSeeder
-    ): AuthRepository = LocalAuthRepositoryImpl(userDao, tokenManager, demoSeeder)
+        localImpl: LocalAuthRepositoryImpl,
+        networkImpl: AuthRepositoryImpl
+    ): AuthRepository = if (BuildConfig.USE_REMOTE) networkImpl else localImpl
 
-    /**
-     * [UserRepository] (dashboard) is now backed by Room.
-     * The network [UserRepositoryImpl] is kept for Phase 7.
-     */
     @Provides @Singleton
     fun provideUserRepository(
-        tokenManager: TokenManager,
-        cycleRoller: CycleRoller,
-        contributionDao: ContributionDao,
-        loanDao: LoanDao,
-        membershipDao: MembershipDao
-    ): UserRepository = LocalUserRepositoryImpl(
-        tokenManager, cycleRoller, contributionDao, loanDao, membershipDao
-    )
+        localImpl: LocalUserRepositoryImpl,
+        networkImpl: UserRepositoryImpl
+    ): UserRepository = if (BuildConfig.USE_REMOTE) networkImpl else localImpl
 
-    /**
-     * [NestRepository] is now backed by Room (Phase 5).
-     * The network [NestRepositoryImpl] is kept for Phase 7 (remote sync).
-     */
     @Provides @Singleton
     fun provideNestRepository(
-        tokenManager: TokenManager,
-        userDao: UserDao,
-        nestDao: NestDao,
-        membershipDao: MembershipDao,
-        cycleRoller: CycleRoller,
-        contributionDao: ContributionDao
-    ): NestRepository = LocalNestRepositoryImpl(
-        tokenManager, userDao, nestDao, membershipDao, cycleRoller, contributionDao
-    )
+        localImpl: LocalNestRepositoryImpl,
+        networkImpl: NestRepositoryImpl
+    ): NestRepository = if (BuildConfig.USE_REMOTE) networkImpl else localImpl
 
-    /**
-     * [ContributionRepository] is now backed by Room (Phase 5).
-     * The network [ContributionRepositoryImpl] is kept for Phase 7 (remote sync).
-     */
     @Provides @Singleton
     fun provideContributionRepository(
-        cycleRoller: CycleRoller,
-        contributionDao: ContributionDao,
-        notificationDao: NotificationDao,
-        tokenManager: TokenManager
-    ): ContributionRepository = LocalContributionRepositoryImpl(cycleRoller, contributionDao, notificationDao, tokenManager)
+        localImpl: LocalContributionRepositoryImpl,
+        networkImpl: ContributionRepositoryImpl
+    ): ContributionRepository = if (BuildConfig.USE_REMOTE) networkImpl else localImpl
 
-    /**
-     * [LoanRepository] is now backed by Room (Phase 5).
-     * The network [LoanRepositoryImpl] is kept for Phase 7 (remote sync).
-     */
     @Provides @Singleton
     fun provideLoanRepository(
-        tokenManager: TokenManager,
-        nestDao: NestDao,
-        loanDao: LoanDao,
-        notificationDao: NotificationDao
-    ): LoanRepository = LocalLoanRepositoryImpl(tokenManager, nestDao, loanDao, notificationDao)
+        localImpl: LocalLoanRepositoryImpl,
+        networkImpl: LoanRepositoryImpl
+    ): LoanRepository = if (BuildConfig.USE_REMOTE) networkImpl else localImpl
 }

@@ -4,6 +4,7 @@ import com.chama.mfuko.core.util.Resource
 import com.chama.mfuko.data.local.DemoSeeder
 import com.chama.mfuko.data.local.LocalAuthManager
 import com.chama.mfuko.data.local.TokenManager
+import com.chama.mfuko.data.local.dao.MembershipDao
 import com.chama.mfuko.data.local.dao.UserDao
 import com.chama.mfuko.data.local.entities.UserEntity
 import com.chama.mfuko.data.remote.AuthRequest
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class LocalAuthRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val tokenManager: TokenManager,
-    private val demoSeeder: DemoSeeder
+    private val demoSeeder: DemoSeeder,
+    private val membershipDao: MembershipDao
 ) : AuthRepository {
 
     // ── Register ──────────────────────────────────────────────────────────────
@@ -75,6 +77,10 @@ class LocalAuthRepositoryImpl @Inject constructor(
 
             val token = buildLocalToken(user.id)
             tokenManager.saveUserSession(user.id, user.name, token)
+            // Resume the user's existing nest (if any) so they land on the
+            // dashboard instead of being asked to create/join a nest again.
+            val existingNestId = membershipDao.getFirstNestIdForUser(user.id) ?: 0L
+            tokenManager.saveCurrentNestId(existingNestId)
 
             Resource.Success(
                 AuthResponse(

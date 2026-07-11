@@ -13,7 +13,7 @@ enables real multi-device sync, M-Pesa Daraja integration, and cloud push notifi
 |---|---|
 | Server framework | Ktor 3.2.3 (Netty engine) |
 | Database ORM | Jetbrains Exposed 0.49.0 |
-| Database | MySQL 8.4 (local) → H2 file (Phase 7 fix) |
+| Database | H2 file (local, zero-setup) |
 | Auth | JWT (auth0 java-jwt 4.4.0) |
 | Password hashing | BCrypt (jbcrypt 0.4) |
 | Connection pool | HikariCP 5.1.0 |
@@ -38,6 +38,8 @@ enables real multi-device sync, M-Pesa Daraja integration, and cloud push notifi
 | POST | `/api/nests/join` | `{inviteCode}` | `{nestId, nestName, inviteCode}` |
 | GET | `/api/nests/{nestId}/members` | — | `[{userId, name, role, amountPaid, totalDue, status}]` |
 
+> `inviteCode` in the request/response bodies maps to `NestsTable.joinCode` server-side.
+
 ### Contributions (JWT required)
 | Method | Path | Body | Response |
 |---|---|---|---|
@@ -54,78 +56,54 @@ enables real multi-device sync, M-Pesa Daraja integration, and cloud push notifi
 | POST | `/api/loans/{loanId}/repay` | `{amount}` | 200 OK |
 | GET | `/api/loans/nest/{nestId}` | — | `[{loanId, userId, principalAmount, termMonths, status}]` |
 
-> **App ↔ server path mismatch (to fix in Phase 7):** the app calls
-> `GET /api/nests/{nestId}/loans` but the server serves `GET /api/loans/nest/{nestId}`.
+> App and server both use `GET /api/loans/nest/{nestId}` — the earlier path mismatch is fixed.
 
 ### Dashboard (JWT required)
 | Method | Path | Response |
 |---|---|---|
-| GET | `/api/me/dashboard` | `{contributionStatus?, loanStatus?, penaltyStatus?}` |
-
-> **Missing field (to add in Phase 7):** `userRole` is not in the server response.
+| GET | `/api/me/dashboard` | `{contributionStatus?, loanStatus?, penaltyStatus?, userRole?}` |
 
 ---
 
-## Running locally (current — requires MySQL)
-
-### Prerequisites
-1. MySQL 8.x installed and running.
-2. Create database: `CREATE DATABASE mfuko_db;`
-3. Verify `src/main/resources/application.conf` has your MySQL password.
+## Running locally (current — zero external services)
 
 ```bash
 cd C:\Users\Alvin\IdeaProjects\MfukoServer
 ./gradlew run
 # Server starts at http://0.0.0.0:8081
+# DB is an H2 file at ./build/mfuko_db — created automatically, no setup needed.
 ```
+
+To point the app at a physical device instead of an emulator, set
+`BuildConfig.BASE_URL` in `app/build.gradle.kts` to your machine's LAN IP
+(e.g. `http://192.168.x.x:8081/`) — the emulator loopback `10.0.2.2` only
+works from the Android emulator, not a real device on the same Wi-Fi.
 
 ---
 
-## Known backend bugs (to fix in Phase 7)
+## Fixed in Phase 7
 
-### 1. Ktor version conflict
-The `build.gradle.kts` mixes Ktor 3.2.3 (most deps) with Ktor 2.3.12 (JWT auth).
-These are binary-incompatible. Fix: align everything to Ktor 3.x.
-```
-# Current (broken):
-implementation("io.ktor:ktor-server-auth-jwt-jvm:2.3.12")   # Ktor 2 !
-implementation(libs.ktor.server.core)                         # Ktor 3
+The bugs previously tracked here are resolved:
 
-# Fix:
-implementation("io.ktor:ktor-server-auth-jwt-jvm:3.2.3")
-```
+1. ~~Ktor version conflict~~ — JWT auth now pulled from the same Ktor 3.2.3
+   version catalog entries (`libs.ktor.server.auth`, `libs.ktor.server.auth.jwt`)
+   as the rest of the server.
+2. ~~Routing.kt referenced non-existent table columns~~ — create-nest now
+   inserts `joinCode`, `managerId`, and `createdAt` correctly.
+3. ~~`NestsTable.managerId` never set~~ — fixed, set from the JWT principal.
+4. ~~`CyclesTable.startDate`/`endDate` type mismatch~~ — route now inserts
+   `LocalDate.now()`, matching the column type.
+5. ~~Loan list path mismatch~~ — app and server agree on `/api/loans/nest/{nestId}`.
+6. ~~`DashboardResponse` missing `userRole`~~ — added; manager-only UI can now activate.
+7. ~~MySQL requirement~~ — replaced with a file-based H2 DB; `./gradlew run` needs no external services.
 
-### 2. Routing.kt references non-existent table columns
-`/api/nests/create` references `NestsTable.contributionAmount` and `NestsTable.inviteCode`
-which don't exist on `NestsTable`. The table has `joinCode` (not `inviteCode`) and no
-`contributionAmount` column. The contribution amount belongs on `CyclesTable`.
+## Still open
 
-### 3. NestsTable has `managerId` (required) but route never sets it
-`NestsTable.managerId` is a non-nullable `long` column. The create nest route never
-inserts it — the server will crash with a constraint violation on every create-nest call.
-Fix: `it[NestsTable.managerId] = userId` in the insert block.
-
-### 4. CyclesTable.startDate / endDate type mismatch
-`CyclesTable` uses `date("start_date")` (java `LocalDate`) but the route inserts
-`LocalDateTime.now()` — a type error. Fix: use `LocalDate.now()`.
-
-### 5. Loan list path mismatch
-- App calls: `GET /api/nests/{nestId}/loans`
-- Server serves: `GET /api/loans/nest/{nestId}`
-
-### 6. DashboardResponse missing `userRole`
-The app's DTO (`DashboardResponse`) expects a `userRole: String?` field but the server
-never sends it — manager-only UI never activates. Fix: add `userRole` to the server response.
-
----
-
-## Phase 7 plan
-
-1. Align Ktor to 3.x throughout.
-2. Fix all routing and table bugs listed above.
-3. Replace MySQL with **H2 file database** so `./gradlew run` needs zero external tools.
-4. Add `userRole` to the dashboard response.
-5. Align the loan-list path.
-6. Externalise the JWT secret to an env var.
-7. Set `BuildConfig.USE_REMOTE = true` in the app + wire `RemoteSync` layer.
-8. (Optional) Deploy to Railway/Render with Postgres + real M-Pesa Daraja + FCM push.
+- **JWT secret is hardcoded** in `application.conf` (`jwt.secret`) — fine for
+  local dev, must move to an environment variable before any real deployment.
+- **`BuildConfig.USE_REMOTE` defaults to `false`.** The DI layer (`AppModule`)
+  now supports switching between local (Room) and network repo impls via this
+  flag, but several screens (e.g. `NestSettingsScreen`) still read Room
+  directly regardless of the flag, and demo login only works offline. Don't
+  flip it to `true` until those screens are migrated.
+- (Optional) Deploy to Railway/Render with Postgres + real M-Pesa Daraja + FCM push.
